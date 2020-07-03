@@ -1,4 +1,6 @@
 """ Lab 05: Mutable Sequences and Trees """
+
+
 # Q2
 def map(fn, seq):
     """Applies fn onto each element in seq and returns a list.
@@ -7,6 +9,8 @@ def map(fn, seq):
     [1, 4, 9]
     """
     "*** YOUR CODE HERE ***"
+    return [fn(x) for x in seq]
+
 
 def filter(pred, seq):
     """Keeps elements in seq only if they satisfy pred.
@@ -15,6 +19,8 @@ def filter(pred, seq):
     [2, 4]
     """
     "*** YOUR CODE HERE ***"
+    return [x for x in seq if pred(x)]
+
 
 def reduce(combiner, seq):
     """Combines elements in seq using combiner.
@@ -27,6 +33,12 @@ def reduce(combiner, seq):
     4
     """
     "*** YOUR CODE HERE ***"
+    sum = seq[0]
+    for item in seq[1:]:
+        sum = combiner(sum, item)
+
+    return sum
+
 
 # Q3
 def acorn_finder(t):
@@ -44,6 +56,14 @@ def acorn_finder(t):
     False
     """
     "*** YOUR CODE HERE ***"
+    if label(t) == 'acorn':
+        return True
+    for branch in branches(t):
+        if acorn_finder(branch):
+            return True
+
+    return False
+
 
 # Q4
 def replace_leaf(t, old, new):
@@ -76,6 +96,14 @@ def replace_leaf(t, old, new):
     True
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        if label(t) == old:
+            return tree(new)
+        else:
+            return copy_tree(t)
+
+    return tree(label(t), [replace_leaf(branch, old, new) for branch in branches(t)])
+
 
 # Tree ADT
 def tree(label, branches=[]):
@@ -84,13 +112,16 @@ def tree(label, branches=[]):
         assert is_tree(branch), 'branches must be trees'
     return [label] + list(branches)
 
+
 def label(tree):
     """Return the label value of a tree."""
     return tree[0]
 
+
 def branches(tree):
     """Return the list of branches of the given tree."""
     return tree[1:]
+
 
 def is_tree(tree):
     """Returns True if the given tree is a tree, and False otherwise."""
@@ -101,11 +132,13 @@ def is_tree(tree):
             return False
     return True
 
+
 def is_leaf(tree):
     """Returns True if the given tree's list of branches is empty, and False
     otherwise.
     """
     return not branches(tree)
+
 
 def print_tree(t, indent=0):
     """Print a representation of this tree in which each node is
@@ -129,6 +162,7 @@ def print_tree(t, indent=0):
     print('  ' * indent + str(label(t)))
     for b in branches(t):
         print_tree(b, indent + 1)
+
 
 def copy_tree(t):
     """Returns a copy of t. Only for testing purposes.
