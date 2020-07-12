@@ -64,6 +64,10 @@ def make_restaurant(name, location, categories, price, reviews):
     categories, price, and reviews for that restaurant."""
     # BEGIN Question 2
     "*** YOUR CODE HERE ***"
+    def restaurant():
+        r_name = 
+
+
     # END Question 2
 
 def restaurant_name(restaurant):
