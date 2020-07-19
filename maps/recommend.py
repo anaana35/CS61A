@@ -6,6 +6,7 @@ from ucb import main, trace, interact
 from utils import distance, mean, zip, enumerate, sample
 from visualize import draw_map
 
+
 ##################################
 # Phase 2: Unsupervised Learning #
 ##################################
@@ -20,6 +21,7 @@ def find_closest(location, centroids):
     """
     # BEGIN Question 3
     "*** YOUR CODE HERE ***"
+    return min(centroids, key=lambda x: distance(location, x))
     # END Question 3
 
 
@@ -49,13 +51,38 @@ def group_by_centroid(restaurants, centroids):
     """
     # BEGIN Question 4
     "*** YOUR CODE HERE ***"
+    result = []
+    for restaurant in restaurants:
+        location = restaurant_location(restaurant)
+        result.append([find_closest(location, centroids), restaurant])
+    return group_by_first(result)
+
     # END Question 4
+
+
+def transpose(matrix):
+    new_matrix = []
+    for i in range(len(matrix[0])):
+        matrix1 = []
+        for j in range(len(matrix)):
+            matrix1.append(matrix[j][i])
+        new_matrix.append(matrix1)
+    return new_matrix
 
 
 def find_centroid(cluster):
     """Return the centroid of the locations of the restaurants in cluster."""
     # BEGIN Question 5
     "*** YOUR CODE HERE ***"
+
+    locations = []
+    for restaurant in cluster:
+        locations.append(restaurant_location(restaurant))
+
+    locations = transpose(locations)
+    for i in range(len(locations)):
+        locations[i] = mean(locations[i])
+    return locations
     # END Question 5
 
 
@@ -70,6 +97,8 @@ def k_means(restaurants, k, max_updates=100):
         old_centroids = centroids
         # BEGIN Question 6
         "*** YOUR CODE HERE ***"
+        centroids = group_by_centroid(restaurants, centroids)
+        centroids = [find_centroid(cluster) for cluster in centroids]
         # END Question 6
         n += 1
     return centroids
@@ -98,6 +127,16 @@ def find_predictor(user, restaurants, feature_fn):
 
     # BEGIN Question 7
     b, a, r_squared = 0, 0, 0  # REPLACE THIS LINE WITH YOUR SOLUTION
+    mean_x = mean(xs)
+    mean_y = mean(ys)
+
+    sxx = sum([(x - mean_x) ** 2 for x in xs])
+    syy = sum([(y - mean_y) ** 2 for y in ys])
+    sxy = sum((x - mean_x) * (y - mean_y) for x, y in zip(xs, ys))
+    b = sxy / sxx
+    a = mean_y - b * mean_x
+    r_squared = sxy ** 2 / (sxx * syy)
+
     # END Question 7
 
     def predictor(restaurant):
@@ -118,6 +157,8 @@ def best_predictor(user, restaurants, feature_fns):
     reviewed = user_reviewed_restaurants(user, restaurants)
     # BEGIN Question 8
     "*** YOUR CODE HERE ***"
+    predict = [find_predictor(user, reviewed, feature_fn) for feature_fn in feature_fns]
+    return max(predict, key=lambda x: x[1])[0]
     # END Question 8
 
 
@@ -134,6 +175,8 @@ def rate_all(user, restaurants, feature_fns):
     reviewed = user_reviewed_restaurants(user, restaurants)
     # BEGIN Question 9
     "*** YOUR CODE HERE ***"
+    result = {restaurant_name(restaurant): user_rating(user, restaurant_name(restaurant)) if restaurant in reviewed else predictor(restaurant) for restaurant in restaurants}
+    return result
     # END Question 9
 
 
@@ -146,6 +189,7 @@ def search(query, restaurants):
     """
     # BEGIN Question 10
     "*** YOUR CODE HERE ***"
+    return [restaurant for restaurant in restaurants if query in restaurant_categories(restaurant)]
     # END Question 10
 
 
@@ -169,12 +213,12 @@ def main(*args):
                         default='test_user',
                         metavar='USER',
                         help='user file, e.g.\n' +
-                        '{{{}}}'.format(','.join(sample(USER_FILES, 3))))
+                             '{{{}}}'.format(','.join(sample(USER_FILES, 3))))
     parser.add_argument('-k', '--k', type=int, help='for k-means')
     parser.add_argument('-q', '--query', choices=CATEGORIES,
                         metavar='QUERY',
                         help='search for restaurants by category e.g.\n'
-                        '{{{}}}'.format(','.join(sample(CATEGORIES, 3))))
+                             '{{{}}}'.format(','.join(sample(CATEGORIES, 3))))
     parser.add_argument('-p', '--predict', action='store_true',
                         help='predict ratings for all restaurants')
     parser.add_argument('-r', '--restaurants', action='store_true',

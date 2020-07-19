@@ -2,6 +2,7 @@
 
 from utils import mean
 
+
 #############################
 # Phase 1: Data Abstraction #
 #############################
@@ -13,9 +14,11 @@ def make_review(restaurant_name, rating):
     """Return a review data abstraction."""
     return [restaurant_name, rating]
 
+
 def review_restaurant_name(review):
     """Return the restaurant name of the review, which is a string."""
     return review[0]
+
 
 def review_rating(review):
     """Return the number of stars given by the review, which is a
@@ -29,9 +32,11 @@ def make_user(name, reviews):
     """Return a user data abstraction."""
     return [name, {review_restaurant_name(r): r for r in reviews}]
 
+
 def user_name(user):
     """Return the name of the user, which is a string."""
     return user[0]
+
 
 def user_reviews(user):
     """Return a dictionary from restaurant names to reviews by the user."""
@@ -50,6 +55,7 @@ def user_reviewed_restaurants(user, restaurants):
     names = list(user_reviews(user))
     return [r for r in restaurants if restaurant_name(r) in names]
 
+
 def user_rating(user, restaurant_name):
     """Return the rating given for restaurant_name by user."""
     reviewed_by_user = user_reviews(user)
@@ -63,41 +69,47 @@ def make_restaurant(name, location, categories, price, reviews):
     """Return a restaurant data abstraction containing the name, location,
     categories, price, and reviews for that restaurant."""
     # BEGIN Question 2
-    "*** YOUR CODE HERE ***"
-    def restaurant():
-        r_name = 
-
-
+    return {'name': name, 'location': location, 'categories': categories, 'price': price, 'ratings': [review_rating(review) for review in reviews if review_restaurant_name(review) == name]}
     # END Question 2
+
 
 def restaurant_name(restaurant):
     """Return the name of the restaurant, which is a string."""
     # BEGIN Question 2
     "*** YOUR CODE HERE ***"
+    return restaurant['name']
     # END Question 2
+
 
 def restaurant_location(restaurant):
     """Return the location of the restaurant, which is a list containing
     latitude and longitude."""
     # BEGIN Question 2
     "*** YOUR CODE HERE ***"
+    return restaurant['location']
     # END Question 2
+
 
 def restaurant_categories(restaurant):
     """Return the categories of the restaurant, which is a list of strings."""
     # BEGIN Question 2
     "*** YOUR CODE HERE ***"
+    return restaurant['categories']
     # END Question 2
+
 
 def restaurant_price(restaurant):
     """Return the price of the restaurant, which is a number."""
     # BEGIN Question 2
     "*** YOUR CODE HERE ***"
+    return restaurant['price']
     # END Question 2
+
 
 def restaurant_ratings(restaurant):
     """Return a list of ratings, which are numbers from 1 to 5, of the
     restaurant based on the reviews of the restaurant."""
     # BEGIN Question 2
     "*** YOUR CODE HERE ***"
+    return restaurant['ratings']
     # END Question 2

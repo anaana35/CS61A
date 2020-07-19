@@ -83,4 +83,11 @@ def mean(s):
     """
     # BEGIN Question 1
     "*** YOUR CODE HERE ***"
+    assert len(s) > 0
+    sum = s[0]
+    for i in range(1, len(s)):
+        sum += s[i]
+
+    sum /= len(s)
+    return sum
     # END Question 1
