@@ -2,8 +2,9 @@
 
 from lab07 import *
 
+
 # Q6
-def remove_all(link , value):
+def remove_all(link, value):
     """Remove all the nodes containing value. Assume there exists some
     nodes to be removed and the first element is never removed.
 
@@ -18,6 +19,12 @@ def remove_all(link , value):
     <0 1>
     """
     "*** YOUR CODE HERE ***"
+    while link:
+        if link.rest and link.rest.first == value:
+            link.rest = link.rest.rest
+        else:
+            link = link.rest
+
 
 # Q7
 def deep_map_mut(fn, link):
@@ -33,6 +40,13 @@ def deep_map_mut(fn, link):
     <9 <16> 25 36>
     """
     "*** YOUR CODE HERE ***"
+    while link:
+        if isinstance(link.first, int):
+            link.first = fn(link.first)
+        elif isinstance(link, Link):
+            deep_map_mut(fn, link.first)
+        link = link.rest
+
 
 # Q8
 def has_cycle(link):
@@ -51,6 +65,7 @@ def has_cycle(link):
     """
     "*** YOUR CODE HERE ***"
 
+
 def has_cycle_constant(link):
     """Return whether link contains a cycle.
 
@@ -63,6 +78,14 @@ def has_cycle_constant(link):
     False
     """
     "*** YOUR CODE HERE ***"
+    fast, slow = link, link
+    while fast and fast.rest:
+        fast, slow = fast.rest.rest, slow.rest
+        if fast is slow:
+            return True
+
+    return False
+
 
 # Q9
 def reverse_other(t):
@@ -79,3 +102,14 @@ def reverse_other(t):
     Tree(1, [Tree(8, [Tree(3, [Tree(5), Tree(4)]), Tree(6, [Tree(7)])]), Tree(2)])
     """
     "*** YOUR CODE HERE ***"
+
+    def helper(t, l):
+        if t.is_leaf():
+            return
+        if l % 2:
+            for i in range(len(t.branches) // 2):
+                t.branches[i].label, t.branches[-(i + 1)].label = t.branches[-(i + 1)].label, t.branches[i].label
+        for branch in t.branches:
+            helper(branch, l + 1)
+
+    helper(t, 1)
